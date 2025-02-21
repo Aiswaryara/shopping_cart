@@ -1,4 +1,4 @@
-const productItems = document.querySelector('.items');
+const productItems = document.querySelector(".items");
 console.log(productItems);
 
 async function getData() {
@@ -13,25 +13,19 @@ async function getData() {
     console.log(json);
 
     productItems.innerHTML = json
-      .map(product => `
-        <article class="item">
-          <div class="item__img">
-            <img src="${product.imageUrl}" alt="${product.name}" />
-          </div>
-          <div class="item__content">
-            <div class="item__content__titlePrice">
-             <h1>${product.name}</h1>
-             <p>Price: $${product.price}</p>
-            </div>
-            <div class="item__content__description">
-             <p>${product.description}</p>
-            </div>
-          </div>
-        </article>
-      `)
-      .join('');
-  } 
-  catch (error) {
+      .map(
+        (product) => `
+        <a href="./product.html?id=${product._id}">
+          <article>
+          <img src="${product.imageUrl}" alt="${product.name}" />
+            <h3 class="productName">${product.name}</h3>
+            <p class="productDescription">${product.description}</p>
+          </article>
+        </a>
+      `
+      )
+      .join("");
+  } catch (error) {
     console.error(error.message);
   }
 }
