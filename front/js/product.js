@@ -39,10 +39,44 @@ async function loadProduct() {
     displayProduct(product);
   }
 }
-document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("colors").addEventListener("change", function () {
-    let selectedColor = this.value; // Get selected color
-  });
+
+document.getElementById("colors").addEventListener("change", function () {
+  let selectedColor = this.value;
 });
 
 window.onload = loadProduct;
+
+function getCart() {
+  return JSON.parse(localStorage.getItem("cart")) || [];
+}
+
+function saveCart(cart) {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function addToCart(id, name, price, color, quantity) {
+  let cart = getCart();
+
+  alert("Product added to cart!");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const addToCartButton = document.getElementById("addToCart");
+  if (addToCartButton) {
+    addToCartButton.addEventListener("click", () => {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      const name = document.getElementById("title").innerHTML;
+      const price = document.getElementById("price").innerHTML;
+      const color = document.getElementById("colors").value;
+      const quantity = parseInt(document.getElementById("quantity").value);
+
+      if (!id || !name || !price || !color || quantity <= 0) {
+        alert("Please select a valid color and quantity.");
+        return;
+      }
+
+      addToCart(id, name, price, color, quantity);
+    });
+  }
+});
