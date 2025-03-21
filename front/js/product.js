@@ -73,20 +73,39 @@ function getCart() {
 // }
 
 function addToCart(quantity) {
-  let cart = getCart();
-  console.log(colorSelect.value);
-  console.log(quantity);
-  return;
-
+  const cart = getCart();
   const item = {
     id: productId,
     quantity: quantity,
+    color: colorSelect.value,
   };
 
-  console.log({ item });
+  //update if we have color and id
+  const isExists = cart.find((cartItem) => {
+    if (cartItem.color === colorSelect.value && cartItem.id === productId) {
+      return true;
+    } else {
+      return false;
+    }
+  });
 
-  localStorage.setItem("cart", JSON.stringify(item));
-
+  if (isExists) {
+    const addItemToCart = cart.map((cartItem) => {
+      if (cartItem.color === colorSelect.value && cartItem.id === productId) {
+        return {
+          ...cartItem,
+          quantity: Number(item.quantity) + Number(quantity),
+        };
+      } else {
+        return cartItem;
+      }
+    });
+    console.log(addItemToCart);
+    //localStorage.setItem('cart', JSON.stringify(addItemToCart));
+  } else {
+    const addItemToCart = [...cart, item];
+    localStorage.setItem("cart", JSON.stringify(addItemToCart));
+  }
   alert("Product added to cart!");
 }
 
