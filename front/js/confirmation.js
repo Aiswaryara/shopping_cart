@@ -1,17 +1,9 @@
-// confirmation.js
-
-// Get the URL parameters
-const urlParams = new URLSearchParams(window.location.search);
-
-// Extract the orderId
-const orderId = urlParams.get("orderId");
-
-// Find the span element where we want to insert the orderId
-const orderIdElement = document.getElementById("orderId");
-
-// Display the orderId if available
-if (orderId && orderIdElement) {
-  orderIdElement.textContent = orderId;
-} else {
-  orderIdElement.textContent = "N/A";
-}
+document.addEventListener("DOMContentLoaded", function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const orderId = urlParams.get("orderId");
+  if (orderId) {
+    document.getElementById("orderId").textContent = orderId;
+  } else {
+    document.getElementById("orderId").textContent = "Order ID is unavailable";
+  }
+});

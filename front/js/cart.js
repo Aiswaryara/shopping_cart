@@ -130,8 +130,11 @@ async function displayCart() {
 
   updateTotals();
 }
-//Form validation
+// === Form validation ===
 const myForm = document.querySelector(".cart__order__form");
+
+// Disable browser's native validation
+myForm.setAttribute("novalidate", true);
 
 myForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -224,20 +227,76 @@ myForm.addEventListener("submit", (event) => {
     emailError.textContent;
 
   if (!hasErrors) {
-    myForm.submit();
+    // storing in local storage before submit
+    localStorage.setItem(
+      "orderDetails",
+      JSON.stringify({
+        firstName,
+        lastName,
+        address,
+        city,
+        email,
+      })
+    );
+
+    submitOrder();
   }
 });
-// storing in local storage
-localStorage.setItem(
-  "orderDetails",
-  JSON.stringify({
-    firstName,
-    lastName,
-    address,
-    city,
-    email,
-  })
-);
+// === Submit Order ===
+async function submitOrder() {
+  const cart = getCart();
+
+  if (cart.length === 0) {
+    alert("Your cart is empty. Please add items to your cart.");
+    return;
+  }
+
+  // Get user details from the form
+  const firstName = document.getElementById("firstName").value;
+  const lastName = document.getElementById("lastName").value;
+  const address = document.getElementById("address").value;
+  const city = document.getElementById("city").value;
+  const email = document.getElementById("email").value;
+
+  // Prepare the order data
+  const orderData = {
+    contact: {
+      firstName,
+      lastName,
+      address,
+      city,
+      email,
+    },
+    products: cart.map((item) => item.id),
+  };
+  console.log(orderData);
+
+  try {
+    const response = await fetch("http://localhost:3000/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(orderData),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        "There was an error placing your order. Please try again."
+      );
+    }
+
+    const orderResponse = await response.json();
+    console.log("Order Response:", orderResponse);
+    const orderId = orderResponse.orderId;
+    console.log("Order ID:", orderId);
+
+    window.location.href = `confirmationPage.html?orderId=${orderId}`;
+  } catch (error) {
+    console.log("Error submitting order:", error);
+    alert("There was an error submitting your order. Please try again.");
+  }
+}
 
 // Init cart on page load
 displayCart();
