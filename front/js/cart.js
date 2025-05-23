@@ -272,7 +272,7 @@ async function submitOrder() {
   console.log(orderData);
 
   try {
-    const response = await fetch("http://localhost:3000/api/orders", {
+    const response = await fetch("http://localhost:3000/api/products/order", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -290,10 +290,11 @@ async function submitOrder() {
     console.log("Order Response:", orderResponse);
     const orderId = orderResponse.orderId;
     console.log("Order ID:", orderId);
+    localStorage.clear();
 
-    window.location.href = `confirmationPage.html?orderId=${orderId}`;
+    window.location.href = `confirmation.html?orderId=${orderId}`;
   } catch (error) {
-    console.log("Error submitting order:", error);
+    console.error("Error submitting order:", error);
     alert("There was an error submitting your order. Please try again.");
   }
 }
